@@ -15,10 +15,10 @@ class Conexion
         $this->server = $_SERVER['HTTP_HOST'];
         $this->connection = null;
         $this->port = 3306; //puerto por default de mysql
-        $this->db = 'ciisa_backend_v1';
+        $this->db = 'ciisa_backend_v1_70';
 
         if ($this->server == 'localhost'){
-            $this->username = 'ciisa_backend_v1';
+            $this->username = 'ciisa_backend_v1_70';
             $this->password = 'l4cl4v3-c11s4';
         }
     }

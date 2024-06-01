@@ -1,0 +1,648 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Documentation",
+        "description": "Este es un servidor de muestra de lo realizado en clases. Puede obtener más información sobre Swagger en [http://swagger.io](http://swagger.io) o en [irc.freenode.net, #swagger](http://swagger.io/irc/). <br><br>Para este ejemplo, puede utilizar las siguientes claves de API para métodos:<ul><li>Método GET - Authorization Bearer: `get`</li><li>Método POST - Authorization Bearer: `post`</li><li>Método PATCH - Authorization Bearer: `patch`</li><li>Método PUT - Authorization Bearer: `put`</li><li>Método DELETE - Authorization Bearer: `delete`</li></ul>.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/backend-sec70-2024t1/v2",
+            "description": "Ambiente Desarrollo / Testing (QA) / Produccion"
+        },
+        {
+            "url": "http://localhost/backend-example/v1",
+            "description": "Class Server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Mantenedor",
+            "description": "Esquema básico",
+            "externalDocs": {
+                "description": "EVA",
+                "url": "http://eva.ciisa.cl"
+            }
+        },
+        {
+            "name": "Info-Contacto",
+            "description": "Información de contacto"
+        }
+    ],
+    "paths": {
+        "/mantenedor/": {
+            "get": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Retorna todos los objetos",
+                "description": "Retorna una lista de objetos del tipo básico, incluye: id, nombre y activo",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MantenedorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthGet": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Crear nuevo objeto",
+                "description": "Crea un objeto básico, incluye: id, nombre y activo",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MantenedorCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Creación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Error: Conflicto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictoExiste"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPost": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Apagar o Encender un objeto",
+                "description": "Apaga o Enciende un objeto básico, deja activo en false o true respectivamente.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del objeto",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "accion",
+                        "in": "query",
+                        "description": "La acción es requerida para la ejecución.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "apagar",
+                                "encender"
+                            ],
+                            "default": "apagar"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cambio exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPatch": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Modifica los datos de un objeto",
+                "description": "Se puede sólo modificar el campo `nombre`",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MantenedorUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualización exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPut": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Eliminar un objeto",
+                "description": "Elimina un objeto básico, lo borra de la base de datos.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del objeto",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    },
+                    "404": {
+                        "description": "Error: No encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictoExiste"
+                                }
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Error: No implementado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthDelete": []
+                    }
+                ]
+            }
+        },
+        "/info-contacto/": {
+            "get": {
+                "tags": [
+                    "Info-Contacto"
+                ],
+                "summary": "Retorna todos los contactos de informacion del cliente",
+                "description": "Retorna una lista de objetos que incluye: id, nombre, icono, texto, texto_adicional y activo",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfoContactoResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthGet": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Info-Contacto"
+                ],
+                "summary": "Crea un nuevo contacto de informacion del cliente",
+                "description": "Crea un objeto que incluye: id, nombre, icono, texto, texto_adicional y activo",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InfoContactoCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Creación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Error: Conflicto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictoExiste"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPost": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Apagar o Encender un objeto",
+                "description": "Apaga o Enciende un objeto básico, deja activo en false o true respectivamente.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del objeto",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "accion",
+                        "in": "query",
+                        "description": "La acción es requerida para la ejecución.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "apagar",
+                                "encender"
+                            ],
+                            "default": "apagar"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cambio exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPatch": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Modifica los datos de un objeto",
+                "description": "Se puede sólo modificar el campo `nombre`",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MantenedorUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualización exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthPut": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Mantenedor"
+                ],
+                "summary": "Eliminar un objeto",
+                "description": "Elimina un objeto básico, lo borra de la base de datos.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del objeto",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResultadoOk"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error: Sin Autorización"
+                    },
+                    "404": {
+                        "description": "Error: No encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictoExiste"
+                                }
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Error: No implementado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuthDelete": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuthGet": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "bearerAuthPost": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "bearerAuthPatch": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "bearerAuthPut": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "bearerAuthDelete": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "ResultadoOk": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "ConflictoExiste": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                }
+            },
+            "MantenedorItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "nuevo objeto"
+                    },
+                    "activo": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "InfoContactoItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "nuevo objeto"
+                    },
+                    "icono": {
+                        "type": "string",
+                        "example": "<i class='fa fa-user'></i>"
+                    },
+                    "texto": {
+                        "type": "string",
+                        "example": "contacto@energyandwater.cl"
+                    },
+                    "texto_adicional": {
+                        "type": "string",
+                        "example": "mailto:contacto@energyandwater.cl"
+                    },
+                    "activo": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "MantenedorUpdate": {
+                "type": "object",
+                "properties": {
+                    "mantenedor": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 13
+                            },
+                            "nombre": {
+                                "type": "string",
+                                "example": "Desarrollo Backend"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "nombre"
+                        ]
+                    }
+                },
+                "required": [
+                    "mantenedor"
+                ]
+            },
+            "MantenedorResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MantenedorItem"
+                        }
+                    }
+                }
+            },
+            "MantenedorCreate": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "example": "nuevo objeto"
+                    }
+                },
+                "required": [
+                    "nombre"
+                ]
+            },
+            "InfoContactoCreate": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "example": "nuevo objeto"
+                    },
+                    "icono": {
+                        "type": "string",
+                        "example": "<i class=\"fa fa-user\"></i>"
+                    },
+                    "texto": {
+                        "type": "string",
+                        "example": "contacto@energyandwater.cl"
+                    },
+                    "texto_adicional": {
+                        "type": "string",
+                        "example": "mailto:contacto@energyandwater.cl"
+                    }
+
+                },
+                "required": [
+                    "nombre",
+                    "texto",
+                    "texto_adicional"
+                ]
+            },
+            "InfoContactoResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InfoContactoItem"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuthGet": []
+        }
+    ]
+}

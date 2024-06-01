@@ -38,11 +38,12 @@ class Controlador
         $id = count($this->getAll()) + 1;
         // echo 'el nuevo id: ' . $id;
         // var_dump($_newObject->nombre);
-        $sql = "INSERT INTO info_contacto (id, nombre, icono, texto, texto_adicional, activo) VALUES ($id,'$_newObject->nombre', '$_newObject->icono', '$_newObject->texto', '$_newObject->texto_adicional',true);";
+        $sql = "INSERT INTO info_contacto (id, nombre, icono, texto, texto_adicional, activo) VALUES ($id,'$_newObject->nombre', '$_newObject->icono', '$_newObject->texto', '$_newObject->texto_adicional', true);";
         // echo $sql;
         $rs = false;
         try {
             $rs = mysqli_query($con->getConnection(), $sql);
+            // var_dump($rs);
         } catch (\Throwable $th) {
             $rs = false;
         }
